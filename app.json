@@ -19,6 +19,9 @@
         "foregroundImage": "./app/assets/app-icon.png",
         "backgroundColor": "#8D99AE"
       }
-    }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }
