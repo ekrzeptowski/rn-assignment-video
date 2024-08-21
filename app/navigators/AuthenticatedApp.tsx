@@ -5,8 +5,14 @@ import { HomeScreen } from "../screens/Home";
 import { colors } from "../styles/colors";
 import HomeIcon from "../assets/icons/home-icon.svg";
 import SearchIcon from "../assets/icons/search-icon.svg";
+import { SearchScreen } from "../screens/Search";
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<TabParamList>();
+
+export type TabParamList = {
+  Home: undefined;
+  Search: { query?: string };
+};
 
 export function AuthenticatedApp() {
   return (
@@ -35,7 +41,8 @@ export function AuthenticatedApp() {
       />
       <Tab.Screen
         name="Search"
-        component={HomeScreen}
+        component={SearchScreen}
+        getId={({ params }) => params?.query || "Search"}
         options={{
           tabBarIcon: ({ color }) => <SearchIcon color={color} />,
         }}

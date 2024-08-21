@@ -4,7 +4,14 @@ import { colors } from "../styles/colors";
 
 import SearchIcon from "../assets/icons/search-icon.svg";
 
-export const SearchBar = () => {
+type SearchBarProps = {
+  defaultValue?: string;
+  onChange?: (text: string) => void;
+  onPress?: () => void;
+  autoFocus?: boolean;
+};
+
+export const SearchBar = ({defaultValue, onChange, onPress, autoFocus}: SearchBarProps) => {
   return (
     <View style={styles.container}>
       <SearchIcon
@@ -17,6 +24,10 @@ export const SearchBar = () => {
         style={styles.input}
         placeholder="Search videos"
         placeholderTextColor={colors.foregroundColor}
+        defaultValue={defaultValue}
+        onChangeText={onChange}
+        onPress={onPress}
+        autoFocus={autoFocus}
       />
     </View>
   );
