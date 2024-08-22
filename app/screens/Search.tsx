@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -20,6 +21,7 @@ import { TabParamList } from "../navigators/AuthenticatedApp";
 import { useDebounce } from "../utils/useDebounce";
 import { YoutubeClient } from "../client/youtube";
 import { StackParamList } from "../navigators/MainNavigator";
+import { radioButtons, SortModal } from "../components/SortModal";
 
 type Props = NativeStackScreenProps<TabParamList, "Search">;
 
@@ -29,15 +31,24 @@ export function SearchScreen({ route, navigation }: Props) {
   const routeQuery = route.params?.query;
   const debouncedSearchQuery = useDebounce(routeQuery, 500);
 
-  const stackNavigation = 
-  useNavigation<NativeStackScreenProps<StackParamList, "AuthenticatedApp">["navigation"]>();
+  const stackNavigation =
+    useNavigation<
+      NativeStackScreenProps<StackParamList, "AuthenticatedApp">["navigation"]
+    >();
 
+  const [sortOrder, setSortOrder] = useState<
+    "relevance" | "date" | "viewCount"
+  >("relevance");
 
   const { data: searchResults, isLoading: searchLoading } = useSWR(
-    debouncedSearchQuery,
+    debouncedSearchQuery + "_" + sortOrder,
     () =>
-      debouncedSearchQuery ? client.search(debouncedSearchQuery, 50) : undefined
+      debouncedSearchQuery
+        ? client.search(debouncedSearchQuery, 50, sortOrder)
+        : undefined
   );
+
+  const [isSortModal, setIsSortModal] = useState(false);
   return (
     <Container>
       <StatusBar style="auto" />
@@ -75,11 +86,11 @@ export function SearchScreen({ route, navigation }: Props) {
             </>
           )}
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => setIsSortModal(true)}>
           <Text style={styles.sortOrder}>
             Sort by:{" "}
             <Text style={{ fontFamily: "Poppins_600SemiBold" }}>
-              Most popular
+              {radioButtons.find((button) => button.value === sortOrder)?.label}
             </Text>
           </Text>
         </TouchableOpacity>
@@ -91,7 +102,7 @@ export function SearchScreen({ route, navigation }: Props) {
           {!searchLoading &&
             searchResults?.items?.map((item) => (
               <TouchableOpacity
-              key={item.id.videoId}
+                key={item.id.videoId}
                 style={{
                   marginVertical: 12,
                 }}
@@ -125,6 +136,13 @@ export function SearchScreen({ route, navigation }: Props) {
             ))}
         </ScrollView>
       </SafeAreaView>
+      <SortModal
+        isOpen={isSortModal}
+        onConfirm={(value) => {
+          setSortOrder(value as "relevance" | "date" | "viewCount");
+          setIsSortModal(false);
+        }}
+      />
     </Container>
   );
 }
