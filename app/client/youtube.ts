@@ -11,8 +11,12 @@ export class YoutubeClient {
     }
   }
 
-  async search(query: string, maxResults = 5): Promise<SearchResults> {
-    const url = `${this.baseUrl}/search?part=snippet&q=${query}&key=${this.apiKey}&maxResults=${maxResults}`;
+  async search(
+    query: string,
+    maxResults = 5,
+    order = "relevance"
+  ): Promise<SearchResults> {
+    const url = `${this.baseUrl}/search?part=snippet&q=${query}&key=${this.apiKey}&maxResults=${maxResults}&order=${order}`;
     const response = await fetch(url);
     const data = await response.json();
     return data;
