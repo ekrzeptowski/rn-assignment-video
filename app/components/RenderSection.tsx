@@ -6,10 +6,16 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { format } from "date-fns";
+
 import { Section } from "../screens/Home";
 import { colors } from "../styles/colors";
 import { convertEm } from "../utils/convertEm";
-import { format } from "date-fns";
+import { TabParamList } from "../navigators/AuthenticatedApp";
+
+type Props = NativeStackScreenProps<TabParamList, "Home">
 
 export function RenderSection({
   section,
@@ -20,11 +26,19 @@ export function RenderSection({
   firstItem?: boolean;
   isLoading?: boolean;
 }) {
+  const navigation = useNavigation<Props["navigation"]>();
+
   return (
     <View style={[!firstItem && styles.sectionDivider]}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionHeaderText}>{section.title}</Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Search", {
+              query: section.title,
+            })
+          }
+        >
           <Text style={styles.sectionShowMore}>Show more</Text>
         </TouchableOpacity>
       </View>

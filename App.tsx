@@ -5,6 +5,7 @@ import {
   Poppins_400Regular,
   Poppins_500Medium,
   Poppins_600SemiBold,
+  Poppins_700Bold,
   useFonts,
 } from "@expo-google-fonts/poppins";
 import { useEffect } from "react";
@@ -19,6 +20,7 @@ export default function App() {
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_600SemiBold,
+    Poppins_700Bold
   });
 
   useEffect(() => {
@@ -35,6 +37,8 @@ export default function App() {
     <SWRConfig value={{
       provider: () => new Map(),
       revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
     }}>
       <SessionProvider>
         <NavigationContainer>

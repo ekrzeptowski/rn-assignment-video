@@ -1,14 +1,17 @@
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import useSWR from "swr";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { YoutubeClient } from "../client/youtube";
 
+import { Container } from "../components/Container";
 import { SearchBar } from "../components/SearchBar";
 import { RenderSection } from "../components/RenderSection";
 
 import SettingsIcon from "../assets/icons/settings-icon.svg";
+import { TabParamList } from "../navigators/AuthenticatedApp";
 
 const client = new YoutubeClient();
 
@@ -57,7 +60,9 @@ const sections: Section[] = [
   },
 ];
 
-export function HomeScreen() {
+type Props = NativeStackScreenProps<TabParamList, "Home">;
+
+export function HomeScreen({ navigation }: Props) {
   const { data: reactNativeData, isLoading: reactNativeDataLoading } = useSWR(
     sections[0].playlistId,
     () => client.getPlaylistItems(sections[0].playlistId)
@@ -86,7 +91,7 @@ export function HomeScreen() {
   sections[3].isLoading = javascriptDataLoading;
 
   return (
-    <View style={styles.container}>
+    <Container>
       <StatusBar style="auto" />
       <SafeAreaView style={{ width: "100%", flex: 1 }}>
         <View
@@ -97,7 +102,13 @@ export function HomeScreen() {
             gap: 16,
           }}
         >
-          <SearchBar />
+          <SearchBar
+            onPress={() =>
+              navigation.navigate("Search", {
+                query: undefined,
+              })
+            }
+          />
           <SettingsIcon style={{ height: 32, width: 32 }} />
         </View>
         <ScrollView>
@@ -111,15 +122,6 @@ export function HomeScreen() {
           ))}
         </ScrollView>
       </SafeAreaView>
-    </View>
+    </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

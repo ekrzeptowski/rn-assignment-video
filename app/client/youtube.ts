@@ -11,7 +11,7 @@ export class YoutubeClient {
     }
   }
 
-  async search(query: string, maxResults = 5) {
+  async search(query: string, maxResults = 5): Promise<SearchResults> {
     const url = `${this.baseUrl}/search?part=snippet&q=${query}&key=${this.apiKey}&maxResults=${maxResults}`;
     const response = await fetch(url);
     const data = await response.json();
@@ -25,3 +25,27 @@ export class YoutubeClient {
     return data;
   }
 }
+
+type SearchResults = {
+  pageInfo: {
+    totalResults: number;
+  };
+  items: Array<{
+    id: {
+      videoId: string;
+    };
+    snippet: {
+      channelTitle: string;
+      title: string;
+      description: string;
+      thumbnails: {
+        high: {
+          url: string;
+          width: number;
+          height: number;
+        };
+      };
+      publishedAt: string;
+    };
+  }>;
+};
