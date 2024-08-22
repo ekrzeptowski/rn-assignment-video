@@ -3,7 +3,6 @@
     "name": "rn-assignment-video",
     "slug": "rn-assignment-video",
     "version": "1.0.0",
-    "orientation": "portrait",
     "icon": "./app/assets/app-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -12,16 +11,21 @@
       "backgroundColor": "#8D99AE"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "requireFullScreen": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/app-icon.png",
         "backgroundColor": "#8D99AE"
-      }
+      },
+      "package": "pl.ekrzeptowski.rn_assignment_video"
     },
-    "plugins": [
-      "expo-secure-store"
-    ]
+    "plugins": ["expo-secure-store", "react-native-video", [
+      "expo-screen-orientation",
+      {
+        "initialOrientation": "PORTRAIT"
+      }
+    ]]
   }
 }

@@ -11,6 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { format } from "date-fns";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
 import { SearchBar } from "../components/SearchBar";
 import { Container } from "../components/Container";
@@ -18,6 +19,7 @@ import { convertEm } from "../utils/convertEm";
 import { TabParamList } from "../navigators/AuthenticatedApp";
 import { useDebounce } from "../utils/useDebounce";
 import { YoutubeClient } from "../client/youtube";
+import { StackParamList } from "../navigators/MainNavigator";
 
 type Props = NativeStackScreenProps<TabParamList, "Search">;
 
@@ -26,6 +28,10 @@ const client = new YoutubeClient();
 export function SearchScreen({ route, navigation }: Props) {
   const routeQuery = route.params?.query;
   const debouncedSearchQuery = useDebounce(routeQuery, 500);
+
+  const stackNavigation = 
+  useNavigation<NativeStackScreenProps<StackParamList, "AuthenticatedApp">["navigation"]>();
+
 
   const { data: searchResults, isLoading: searchLoading } = useSWR(
     debouncedSearchQuery,
@@ -84,9 +90,15 @@ export function SearchScreen({ route, navigation }: Props) {
         >
           {!searchLoading &&
             searchResults?.items?.map((item) => (
-              <View
+              <TouchableOpacity
+              key={item.id.videoId}
                 style={{
                   marginVertical: 12,
+                }}
+                onPress={() => {
+                  stackNavigation.navigate("VideoDetails", {
+                    videoId: item.id.videoId,
+                  });
                 }}
               >
                 <Image
@@ -109,7 +121,7 @@ export function SearchScreen({ route, navigation }: Props) {
                     {format(item.snippet.publishedAt, "dd.LL.yyyy")}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
         </ScrollView>
       </SafeAreaView>
