@@ -5,6 +5,7 @@ import {
   FlatList,
   Image,
   StyleSheet,
+  Pressable,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -14,8 +15,9 @@ import { Section } from "../screens/Home";
 import { colors } from "../styles/colors";
 import { convertEm } from "../utils/convertEm";
 import { TabParamList } from "../navigators/AuthenticatedApp";
+import { StackParamList } from "../navigators/MainNavigator";
 
-type Props = NativeStackScreenProps<TabParamList, "Home">
+type Props = NativeStackScreenProps<TabParamList, "Home">;
 
 export function RenderSection({
   section,
@@ -57,22 +59,55 @@ export function RenderSection({
 }
 
 function RenderItem({ item }: { item: Section["data"][0] }) {
+  const navigation =
+    useNavigation<
+      NativeStackScreenProps<StackParamList, "AuthenticatedApp">["navigation"]
+    >();
   return (
-    <View style={styles.item}>
-      <Image
-        source={{
-          uri:
-            item.snippet.thumbnails.high.url || "https://placehold.co/360x224",
-        }}
-        style={styles.itemImage}
-        width={180}
-        height={112}
-      />
-      <Text style={styles.itemTitle}>{item.snippet.title}</Text>
-      <Text style={styles.itemDate}>
-        {format(item.snippet.publishedAt, "dd.LL.yyyy")}
-      </Text>
-    </View>
+    <Pressable
+      style={({ pressed }) => [
+        styles.item,
+        {
+          opacity: pressed ? 0.7 : 1,
+        },
+      ]}
+      onPress={() => {
+        navigation.navigate("VideoDetails", {
+          videoId: item.snippet.resourceId.videoId,
+        });
+      }}
+    >
+      {({ pressed }) => (
+        <>
+          <View
+            style={{
+              opacity: pressed ? 0.5 : 0,
+              position: "absolute",
+              backgroundColor: colors.mainColor,
+              top: 0,
+              left: -8,
+              right: -8,
+              bottom: 0,
+              borderRadius: 18,
+            }}
+          />
+          <Image
+            source={{
+              uri:
+                item.snippet.thumbnails.high.url ||
+                "https://placehold.co/360x224",
+            }}
+            style={styles.itemImage}
+            width={180}
+            height={112}
+          />
+          <Text style={styles.itemTitle}>{item.snippet.title}</Text>
+          <Text style={styles.itemDate}>
+            {format(item.snippet.publishedAt, "dd.LL.yyyy")}
+          </Text>
+        </>
+      )}
+    </Pressable>
   );
 }
 

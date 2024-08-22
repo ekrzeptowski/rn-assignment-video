@@ -20,9 +20,7 @@ export type Section = {
   playlistId: string;
   isLoading?: boolean;
   data: Array<{
-    id: {
-      videoId: string;
-    };
+    id: string;
     snippet: {
       title: string;
       thumbnails: {
@@ -33,6 +31,9 @@ export type Section = {
         };
       };
       publishedAt: string;
+      resourceId: {
+        videoId: string;
+      }
     };
   }>;
 };

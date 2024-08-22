@@ -24,6 +24,13 @@ export class YoutubeClient {
     const data = await response.json();
     return data;
   }
+
+  async getVideoDetails(videoId: string): Promise<VideoDetails> {
+    const url = `${this.baseUrl}/videos?part=snippet,statistics&id=${videoId}&key=${this.apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  }
 }
 
 type SearchResults = {
@@ -46,6 +53,28 @@ type SearchResults = {
         };
       };
       publishedAt: string;
+    };
+  }>;
+};
+
+type VideoDetails = {
+  items: Array<{
+    snippet: {
+      title: string;
+      description: string;
+      channelTitle: string;
+      publishedAt: string;
+      thumbnails: {
+        high: {
+          url: string;
+          width: number;
+          height: number;
+        };
+      };
+    };
+    statistics: {
+      viewCount: number;
+      likeCount: number;
     };
   }>;
 };
